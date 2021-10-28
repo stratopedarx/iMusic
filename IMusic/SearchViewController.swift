@@ -15,10 +15,11 @@ struct TrackModel {
 
 
 class SearchViewController: UITableViewController {
+    
+    private var timer: Timer?
     let searchController = UISearchController(searchResultsController: nil)
     
-    let tracks = [TrackModel(trackName: "bad guy", artistName: "Billie Eilish"),
-                 TrackModel(trackName: "bury a friend", artistName: "Billie Eilish")]
+    var tracks = [Track]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +34,7 @@ class SearchViewController: UITableViewController {
     private func setupSearchBar() {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-
+        
         searchController.searchBar.delegate = self
     }
     
@@ -48,11 +49,11 @@ class SearchViewController: UITableViewController {
         let track = tracks[indexPath.row]
         
         var content = cell.defaultContentConfiguration()
-        content.text = "\(track.trackName)\n\(track.artistName)"
+        content.text = "\(track.trackName ?? "Unknown track name")\n\(track.artistName ?? "Unknown artist name")"
         cell.textLabel?.numberOfLines = 2
         content.image = UIImage(named: "Image")
         cell.contentConfiguration = content
-
+        
         return cell
     }
 }
@@ -62,19 +63,35 @@ class SearchViewController: UITableViewController {
 extension SearchViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
         
-        let url = "https://itunes.apple.com/search?term=\(searchText)&limit=25"
-        
-        AF.request(url).response { response in
-            if let error = response.error {
-                print("error received requesting data \(error.localizedDescription)")
-                return
-            }
+        // делаем искусственную задержку, что бы запрос не отправлялся при вводе каждого символа
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
+            let url = "https://itunes.apple.com/search"
+            let parametrs = ["term": searchText, "limit": "10"]
             
-            guard let data = response.data else { return }
-            let someString = String(data: data, encoding: .utf8)
-            print(someString ?? "")
-        }
+            AF.request(url,
+                       method: .get,
+                       parameters: parametrs,
+                       encoding: URLEncoding.default,
+                       headers: nil).response { response in
+                if let error = response.error {
+                    print("error received requesting data \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let data = response.data else { return }
+                
+                let decoder = JSONDecoder()
+                do {
+                    let objects = try decoder.decode(SearchResponse.self, from: data)
+                    self.tracks = objects.results
+                    self.tableView.reloadData()
+                    print("objects: \(objects)")
+                } catch let jsonError {
+                    print("Failed to decode JSON", jsonError)
+                }
+            }
+        })
     }
 }
