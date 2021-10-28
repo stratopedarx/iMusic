@@ -8,14 +8,9 @@
 import UIKit
 import Alamofire
 
-struct TrackModel {
-    var trackName: String
-    var artistName: String
-}
-
-
 class SearchViewController: UITableViewController {
     
+    var networkService = NetworkService()
     private var timer: Timer?
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -66,32 +61,19 @@ extension SearchViewController: UISearchBarDelegate {
         
         // делаем искусственную задержку, что бы запрос не отправлялся при вводе каждого символа
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
-            let url = "https://itunes.apple.com/search"
-            let parametrs = ["term": searchText, "limit": "10"]
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
             
-            AF.request(url,
-                       method: .get,
-                       parameters: parametrs,
-                       encoding: URLEncoding.default,
-                       headers: nil).response { response in
-                if let error = response.error {
-                    print("error received requesting data \(error.localizedDescription)")
-                    return
-                }
-                
-                guard let data = response.data else { return }
-                
-                let decoder = JSONDecoder()
-                do {
-                    let objects = try decoder.decode(SearchResponse.self, from: data)
-                    self.tracks = objects.results
-                    self.tableView.reloadData()
-                    print("objects: \(objects)")
-                } catch let jsonError {
-                    print("Failed to decode JSON", jsonError)
-                }
+            // `{ searchResults in` - делая вот так, происходит утечка памяти. networkService имеет жесткую ссылку
+            // на наш SearchViewController. И наоборот, объект SearchViewController имеет жесткую ссылку на networkService
+            // что бы это испроавить прописываем [weak self]. Таким образом мы говорим, что один из элементов будет weak
+            // print("out Self: \(self)") - object SearchViewController
+            self.networkService.fetchTracks(searchText: searchText) { [weak self] searchResults in
+                guard let self = self else { return }
+                // print("in Self: \(self)") -  - object SearchViewController. the same object
+                self.tracks = searchResults?.results ?? []
+                self.tableView.reloadData()
             }
-        })
+        }
     }
 }
+
