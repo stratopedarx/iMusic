@@ -19,9 +19,21 @@ class SearchPresenter: SearchPresentationLogic {
         switch response {
         case .some:
             print("presenter .some")
-        case .presentTracks:
-            print("presenter .presentTracks")
-            viewController?.displayData(viewModel: Search.Model.ViewModel.ViewModelData.displayTracks)
+        case .presentTracks(let searchResponse):
+            let cells = searchResponse?.results.map({ track in
+                cellViewModel(from: track)
+            }) ?? []
+            
+            let searchViewModel = SearchViewModel(cells: cells)
+            viewController?.displayData(viewModel: Search.Model.ViewModel.ViewModelData.displayTracks(searchViewModel: searchViewModel))
         }
     }
+
+    private func cellViewModel(from track: Track) -> SearchViewModel.Cell {
+        return SearchViewModel.Cell(iconUrlString: track.artworkUrl100 ?? "",
+                                    trackName: track.trackName ?? "",
+                                    collectionName: track.collectionName ?? "",
+                                    artistName: track.artistName ?? "")
+    }
+
 }

@@ -19,6 +19,9 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
     @IBOutlet weak var tableView: UITableView!
     let searchController = UISearchController(searchResultsController: nil)
     
+    private var searchViewModel = SearchViewModel(cells: [])
+    private var timer: Timer?
+    
     
     // MARK: Object lifecycle
     // так как загружаем не из xib файла, а из сториборд, то эти инициализаторы нам не понадобятся
@@ -66,6 +69,7 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
     }
     
@@ -78,8 +82,9 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
         switch viewModel {
         case .some:
             print("viewController .some")
-        case .displayTracks:
-            print("viewController .displayTracks")
+        case .displayTracks(let searchViewModel):
+            self.searchViewModel = searchViewModel
+            self.tableView.reloadData()
         }
     }
 }
@@ -88,14 +93,17 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
 
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return searchViewModel.cells.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellId", for: indexPath)
-        
+        let cellViewModel = searchViewModel.cells[indexPath.row]
+
         var content = cell.defaultContentConfiguration()
-        content.text = "\(indexPath)"
+        content.text = "\(cellViewModel.trackName)\n\(cellViewModel.artistName)"
+        cell.textLabel?.numberOfLines = 2
+        content.image = UIImage(named: "Image")
         cell.contentConfiguration = content
         
         return cell
@@ -106,10 +114,11 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
 extension SearchViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
-        
-        interactor?.makeRequest(request: Search.Model.Request.RequestType.getTracks)
-        
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
+            let request = Search.Model.Request.RequestType.getTracks(searchText: searchText)
+            self.interactor?.makeRequest(request: request)
+        })
     }
 }
 
