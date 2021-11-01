@@ -19,11 +19,11 @@ class TrackDetailView: UIView {
     @IBOutlet private weak var playPauseButton: UIButton!
     @IBOutlet private weak var volumeSlider: UISlider!
     
-    override class func awakeFromNib() {
+    
+    override func awakeFromNib() {
         super.awakeFromNib()
         
-        
-        
+        trackImageView.backgroundColor = .gray
     }
     
     // Actions
