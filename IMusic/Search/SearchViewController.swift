@@ -114,6 +114,20 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let cellViewModel = searchViewModel.cells[indexPath.row]
+        
+        // мы хотим что бы появлялось модальное окно TrackDetailView. Оно должно быть поверх всех экранов.
+        // по иерархии новый экран должен находиться сверху. За текущий контроллер отвечает свойство window.
+        // с помощью данного свойста мы можем сказать, что хотим наложить новый экран по верх всех.
+        // keyWindow - то окно, на котором мы сейчас находимся
+        let window = getKeyWindow()
+        // из ниб файла загружаем View.
+        let trackDetailsView = Bundle.main.loadNibNamed("TrackDetailView", owner: self, options: nil)?.first as! TrackDetailView
+        //
+        window.addSubview(trackDetailsView)
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         // стандартная высота как в Apple music
         return 84
@@ -147,3 +161,12 @@ extension SearchViewController: UISearchBarDelegate {
     }
 }
 
+
+// MARK: - Helpers
+private extension SearchViewController {
+    func getKeyWindow() -> UIWindow {
+        return UIApplication.shared.connectedScenes
+            .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+            .first { $0.isKeyWindow }!
+    }
+}
