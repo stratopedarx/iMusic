@@ -18,10 +18,10 @@ protocol TrackCellViewModel {
 class TrackCell: UITableViewCell {
     static let reuseId = "TrackCell"
 
-    @IBOutlet weak var trackImageView: UIImageView!
-    @IBOutlet weak var trackNameLabel: UILabel!
-    @IBOutlet weak var artistNameLabel: UILabel!
-    @IBOutlet weak var collectionNameLabel: UILabel!
+    @IBOutlet private weak var trackImageView: UIImageView!
+    @IBOutlet private weak var trackNameLabel: UILabel!
+    @IBOutlet private weak var artistNameLabel: UILabel!
+    @IBOutlet private weak var collectionNameLabel: UILabel!
 
     // вызывается этот метод, если только ячейка сконфигурирована черех xib файл
     override class func awakeFromNib() {

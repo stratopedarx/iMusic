@@ -16,11 +16,12 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
     
     var interactor: SearchBusinessLogic?
     var router: (NSObjectProtocol & SearchRoutingLogic)?
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
     let searchController = UISearchController(searchResultsController: nil)
     
     private var searchViewModel = SearchViewModel(cells: [])
     private var timer: Timer?
+    private lazy var footerView = FooterView()  // прогоняем эту вью через весь цикл clean architecture
     
     
     // MARK: Object lifecycle
@@ -80,15 +81,20 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
         // регистрируем новую ячейку, которую добавили через xib файл
         let nib = UINib(nibName: "TrackCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: TrackCell.reuseId)
+        
+        // удаляем все пустые ячейки
+        // в этом же вью можем реализовать индикатор загрузки. сделаем это в отдельном файле
+        tableView.tableFooterView = footerView
     }
     
     func displayData(viewModel: Search.Model.ViewModel.ViewModelData) {
         switch viewModel {
-        case .some:
-            print("viewController .some")
         case .displayTracks(let searchViewModel):
             self.searchViewModel = searchViewModel
             self.tableView.reloadData()
+            footerView.hideLoader()
+        case .displayFooterView:
+            footerView.showLoader()
         }
     }
 }
@@ -103,16 +109,8 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TrackCell.reuseId, for: indexPath) as! TrackCell
         let cellViewModel = searchViewModel.cells[indexPath.row]
-        
-        cell.trackImageView.backgroundColor = .red
         cell.set(viewModel: cellViewModel)
 
-//        var content = cell.defaultContentConfiguration()
-//        content.text = "\(cellViewModel.trackName)\n\(cellViewModel.artistName)"
-//        cell.textLabel?.numberOfLines = 2
-//        content.image = UIImage(named: "Image")
-//        cell.contentConfiguration = content
-        
         return cell
     }
 
@@ -120,8 +118,23 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         // стандартная высота как в Apple music
         return 84
     }
+    
+    // в header поместим label
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.text = "Please enter search term above..."
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        return label
+    }
+
+    // делаем для того, что бы надпись "Please enter search term above..." убиралась при вводе
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return searchViewModel.cells.count > 0 ? 0 : 250
+    }
 }
 
+// MARK: - UISearchBarDelegate
 
 extension SearchViewController: UISearchBarDelegate {
     

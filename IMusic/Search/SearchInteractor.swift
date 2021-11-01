@@ -23,9 +23,10 @@ class SearchInteractor: SearchBusinessLogic {
             service = SearchService()
         }
         switch request {
-        case .some:
-            print("interactor .some")
         case .getTracks(let searchText):
+            // это делается для отображения индикатора загрузки
+            presenter?.presentData(response: Search.Model.Response.ResponseType.presentFooterView)
+            
             networkService.fetchTracks(searchText: searchText) { [weak self] searchResponse in
                 guard let self = self else { return }
                 let response = Search.Model.Response.ResponseType.presentTracks(searchResponse: searchResponse)

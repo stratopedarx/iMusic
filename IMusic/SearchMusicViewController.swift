@@ -5,6 +5,8 @@
 //  Created by Sergey Lobanov on 27.10.2021.
 //
 
+// это класс от самой первой реализации. Не удаляю его для примера.
+
 import UIKit
 import Alamofire
 
