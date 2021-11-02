@@ -115,7 +115,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let cellViewModel = searchViewModel.cells[indexPath.row]
+        let cellViewModel = searchViewModel.cells[indexPath.row]
         
         // мы хотим что бы появлялось модальное окно TrackDetailView. Оно должно быть поверх всех экранов.
         // по иерархии новый экран должен находиться сверху. За текущий контроллер отвечает свойство window.
@@ -124,7 +124,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         let window = getKeyWindow()
         // из ниб файла загружаем View.
         let trackDetailsView = Bundle.main.loadNibNamed("TrackDetailView", owner: self, options: nil)?.first as! TrackDetailView
-        //
+        trackDetailsView.set(viewModel: cellViewModel)
         window.addSubview(trackDetailsView)
     }
     
