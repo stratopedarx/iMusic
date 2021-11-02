@@ -64,6 +64,8 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
         setup()
         setupTableView()
         setupSearchBar()
+        // по дефолту загрузим главный экран
+        searchBar(searchController.searchBar, textDidChange: "Red")
     }
     
     private func setupSearchBar() {
