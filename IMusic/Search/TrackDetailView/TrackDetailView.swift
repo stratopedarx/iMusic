@@ -10,11 +10,11 @@ import SDWebImage
 import AVKit
 
 class TrackDetailView: UIView {
-
+    
     static let scale: CGFloat = 0.8
     
     // MARK: - @IBOutlet
-
+    
     @IBOutlet private weak var trackImageView: UIImageView!
     @IBOutlet private weak var currentTimeSlider: UISlider!
     @IBOutlet private weak var currentTimeLabel: UILabel!
@@ -34,26 +34,27 @@ class TrackDetailView: UIView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
+        
         setInitScaleForImage()
         trackImageView.layer.cornerRadius = 5
     }
-
+    
     func set(viewModel: SearchViewModel.Cell) {
         trackTitleLabel.text = viewModel.trackName
         authorTitleLabel.text = viewModel.artistName
         playTrack(previewUrl: viewModel.previewUrl)
         monitorStartTime()
-
+        observePlayerCurrentTime()  // для обновления лейблов currentTime and durationTime
+        
         // меняет в строке 100х100 на 600х600
         let string600 = viewModel.iconUrlString.replacingOccurrences(of: "100x100", with: "600x600")
-
+        
         guard let url = URL(string: string600) else { return }
         trackImageView.sd_setImage(with: url, completed: nil)
     }
-
+    
     // MARK: - @IBAction
-
+    
     @IBAction private func dragDownButtonTapped(_ sender: UIButton) {
         // сворачиваем данное окошко с экрана
         self.removeFromSuperview()
@@ -81,7 +82,7 @@ class TrackDetailView: UIView {
             reduceTrackImageView()
         }
     }
-
+    
     @IBAction private func nextTrack(_ sender: UIButton) {
     }
     
@@ -105,9 +106,9 @@ private extension TrackDetailView {
         player.replaceCurrentItem(with: playerItem)
         player.play()
     }
-
+    
     // MARK: - Time setup
-
+    
     // эту функцию мы сделали для того, что бы при включении трека,
     // картинка из маленького квадрата вырастала в большой квадрат в самом начале
     func monitorStartTime() {
@@ -126,12 +127,29 @@ private extension TrackDetailView {
             }
     }
     
+    func observePlayerCurrentTime() {
+        // эта функция позволяет обновлять экран
+        let interval = CMTimeMake(value: 1, timescale: 2)
+        player.addPeriodicTimeObserver(
+            forInterval: interval,
+            queue: .main) { [weak self] time in
+                // тут указываем что делать каждую секунду
+                guard let self = self else { return }
+                self.currentTimeLabel.text = time.toDisplayString()
+                
+                let durationTime = self.player.currentItem?.duration // сколько секунд идет аудио файл
+                // отвечает за то сколько секунд осталось в текущий момент времени
+                let currentDurationText = ((durationTime ?? CMTimeMake(value: 1, timescale: 1)) - time).toDisplayString()
+                self.durationLabel.text = "-\(currentDurationText)"
+        }
+    }
+
+    // MARK: - Animations
+
     // картинка будет отображаться не на весь экран
     func setInitScaleForImage() {
         trackImageView.transform = CGAffineTransform(scaleX: TrackDetailView.scale, y: TrackDetailView.scale)
     }
-    
-    // MARK: - Animations
 
     func enlargeTrackImageView() {
         UIView.animate(withDuration: 1,  // сколько будет длиться данная анимация
@@ -142,7 +160,7 @@ private extension TrackDetailView {
                        animations: { self.trackImageView.transform = .identity },  // что делать во время анимации. в начальное состояние
                        completion: nil)  // никаих действий не делать после анимации
     }
-
+    
     func reduceTrackImageView() {
         UIView.animate(withDuration: 1,
                        delay: 0,
