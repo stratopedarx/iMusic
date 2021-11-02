@@ -40,6 +40,7 @@ class TrackDetailView: UIView {
     }
     
     @IBAction private func previousTrack(_ sender: UIButton) {
+        print("work")
     }
     
     @IBAction private func playPauseAction(_ sender: UIButton) {
