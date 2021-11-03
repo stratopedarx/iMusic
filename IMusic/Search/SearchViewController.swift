@@ -126,7 +126,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         // keyWindow - то окно, на котором мы сейчас находимся
         let window = getKeyWindow()
         // из ниб файла загружаем View.
-        let trackDetailsView = Bundle.main.loadNibNamed("TrackDetailView", owner: self, options: nil)?.first as! TrackDetailView
+        let trackDetailsView: TrackDetailView = TrackDetailView.loadFromNib()
         trackDetailsView.set(viewModel: cellViewModel)
         trackDetailsView.delegate = self
     
