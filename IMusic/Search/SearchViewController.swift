@@ -66,6 +66,7 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
         setupSearchBar()
         // по дефолту загрузим главный экран
         searchBar(searchController.searchBar, textDidChange: "Red")
+        
     }
     
     private func setupSearchBar() {
@@ -127,6 +128,8 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         // из ниб файла загружаем View.
         let trackDetailsView = Bundle.main.loadNibNamed("TrackDetailView", owner: self, options: nil)?.first as! TrackDetailView
         trackDetailsView.set(viewModel: cellViewModel)
+        trackDetailsView.delegate = self
+    
         window.addSubview(trackDetailsView)
     }
     
@@ -170,5 +173,47 @@ private extension SearchViewController {
         return UIApplication.shared.connectedScenes
             .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
             .first { $0.isKeyWindow }!
+    }
+}
+
+// MARK: - TrackMovingDelegate
+
+extension SearchViewController: TrackMovingDelegate {
+    
+    private func getTrack(isForwardTrack: Bool) -> SearchViewModel.Cell? {
+        // 1. Понать какой индекс патх
+        // 2. Передвинуть и проверить существует или нет
+        // 3. Находим информацию.
+        // 4. Убираем выделение с одной ячейки и выделяем новую
+        // 5. Возвращаем информацию
+        guard let indexPath = tableView.indexPathForSelectedRow else { return nil }
+        tableView.deselectRow(at: indexPath, animated: true)  // снимаем выделение
+        var nextIndexPath: IndexPath
+        if isForwardTrack {
+            nextIndexPath = IndexPath(row: indexPath.row + 1, section: indexPath.section)
+            // что бы с последнего индекса переходило на первый
+            if nextIndexPath.row == searchViewModel.cells.count {
+                nextIndexPath.row = 0
+            }
+        } else {
+            nextIndexPath = IndexPath(row: indexPath.row - 1, section: indexPath.section)
+            if nextIndexPath.row == -1 {
+                nextIndexPath.row = searchViewModel.cells.count - 1
+            }
+        }
+
+        tableView.selectRow(at: nextIndexPath, animated: true, scrollPosition: .none)  // выделяем новую ячейку
+        let cellViewModel = searchViewModel.cells[nextIndexPath.row]
+        return cellViewModel
+    }
+    
+    func moveBackForPreviousTrack() -> SearchViewModel.Cell? {
+        print("go back")
+        return getTrack(isForwardTrack: false)
+    }
+
+    func moveForwardForNextTrack() -> SearchViewModel.Cell? {
+        print("go forward")
+        return getTrack(isForwardTrack: true)
     }
 }

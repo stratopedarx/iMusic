@@ -9,6 +9,11 @@ import UIKit
 import SDWebImage
 import AVKit
 
+protocol TrackMovingDelegate: AnyObject {
+    func moveBackForPreviousTrack() -> SearchViewModel.Cell?
+    func moveForwardForNextTrack() -> SearchViewModel.Cell?
+}
+
 class TrackDetailView: UIView {
     
     static let scale: CGFloat = 0.8
@@ -31,6 +36,7 @@ class TrackDetailView: UIView {
         return avPlayer
     }()
     
+    weak var delegate: TrackMovingDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -39,7 +45,7 @@ class TrackDetailView: UIView {
         trackImageView.layer.cornerRadius = 5
         
         // set init volume
-        volumeSlider.value = 0.8
+        volumeSlider.value = 0.6
         player.volume = volumeSlider.value
     }
     
@@ -80,9 +86,31 @@ class TrackDetailView: UIView {
     }
     
     @IBAction private func previousTrack(_ sender: UIButton) {
-        print("work")
+        // список со всеми ячейками хранится в SearchViewController
+        // есть несколько способов. 1) Через делегат (это самый правильный способ)
+        // 2) Создавать отдельные комплишен блоки, которые откуда забирают и куда передают информацию.
+        // Важно понять, что этот экран подгружается с помощью функции set в SearchViewController
+        // должно быть что-то типа того: self.set(viewModel: следующаяЯчейка/предыдущая).
+        // с помощью делегатов будем отправлять запрос в SearchViewController и в качестве ответа получим информацию по требуемой ячейке
+        // 1. Создаем протокол TrackMovingDelegate
+        // 2. Создаем объект этого делегата. weak var delegate: TrackMovingDelegate?
+        // 3. В функциях previousTrack, nextTrack используем этот делегат
+        // 4. Эти функции moveBackForPreviousTrack будут отрабатывать в SearchViewController
+        // 5. Надо назначить делегата, что бы методы отрабатывали, потому что не понятно кто их должен выполнять.
+        // trackDetailsView.delegate = self
+        let cellViewModel = delegate?.moveBackForPreviousTrack()
+        if let cellViewModel = cellViewModel {
+            self.set(viewModel: cellViewModel)
+        }
     }
-    
+
+    @IBAction private func nextTrack(_ sender: UIButton) {
+        let cellViewModel = delegate?.moveForwardForNextTrack()
+        if let cellViewModel = cellViewModel {
+            self.set(viewModel: cellViewModel)
+        }
+    }
+
     @IBAction private func playPauseAction(_ sender: UIButton) {
         if player.timeControlStatus == .paused {
             player.play()
@@ -94,10 +122,7 @@ class TrackDetailView: UIView {
             reduceTrackImageView()
         }
     }
-    
-    @IBAction private func nextTrack(_ sender: UIButton) {
-    }
-    
+        
     // для объяснения почему не освобождался объект вызовем deinit
     // речь про метод: monitorStartTime
     deinit {
