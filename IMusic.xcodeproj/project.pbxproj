@@ -170,11 +170,11 @@
 			children = (
 				74E7A7592729ADF500C65617 /* AppDelegate.swift */,
 				74E7A75B2729ADF500C65617 /* SceneDelegate.swift */,
-				743BC5C4272BD9030001465D /* Services */,
 				74E7A76D2729AE3E00C65617 /* MainTabBarController.swift */,
-				743BC5B5272BD7D50001465D /* Search */,
 				74E7A76F2729B1E800C65617 /* SearchMusicViewController.swift */,
 				74E7A75D2729ADF500C65617 /* ViewController.swift */,
+				743BC5C4272BD9030001465D /* Services */,
+				743BC5B5272BD7D50001465D /* Search */,
 				74E7A75F2729ADF500C65617 /* Main.storyboard */,
 				74E7A7622729AE0800C65617 /* Assets.xcassets */,
 				74E7A7642729AE0800C65617 /* LaunchScreen.storyboard */,

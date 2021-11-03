@@ -37,6 +37,10 @@ class TrackDetailView: UIView {
         
         setInitScaleForImage()
         trackImageView.layer.cornerRadius = 5
+        
+        // set init volume
+        volumeSlider.value = 0.8
+        player.volume = volumeSlider.value
     }
     
     func set(viewModel: SearchViewModel.Cell) {
@@ -60,11 +64,19 @@ class TrackDetailView: UIView {
         self.removeFromSuperview()
     }
     
+    // обрабатываем передвижение слайдера
     @IBAction private func handleCurrentTimeSlider(_ sender: UISlider) {
+        let percentage = currentTimeSlider.value
+        guard let duration = player.currentItem?.duration else { return }
+        let durationInSeconds = CMTimeGetSeconds(duration)
+        let seekTimeInSeconds = Float64(percentage) * durationInSeconds
+        let seekTime = CMTimeMakeWithSeconds(seekTimeInSeconds, preferredTimescale: 1)
+        player.seek(to: seekTime)
     }
     
     
     @IBAction private func handleVolumeSlider(_ sender: UISlider) {
+        player.volume = volumeSlider.value
     }
     
     @IBAction private func previousTrack(_ sender: UIButton) {
@@ -141,7 +153,20 @@ private extension TrackDetailView {
                 // отвечает за то сколько секунд осталось в текущий момент времени
                 let currentDurationText = ((durationTime ?? CMTimeMake(value: 1, timescale: 1)) - time).toDisplayString()
                 self.durationLabel.text = "-\(currentDurationText)"
+                
+                self.updateCurrentTimeSlider() // обновляем slider
         }
+    }
+
+    // логика для слайдера песни
+    func updateCurrentTimeSlider() {
+        // текущая отметка
+        let currentTimeSeconds = CMTimeGetSeconds(player.currentTime())
+        // CMTimeMake(value: 1, timescale: 1) - это дефолтное значение
+        // длина всей песни
+        let durationSeconds = CMTimeGetSeconds(player.currentItem?.duration ?? CMTimeMake(value: 1, timescale: 1))
+        let percentage = currentTimeSeconds / durationSeconds
+        self.currentTimeSlider.value = Float(percentage)
     }
 
     // MARK: - Animations
