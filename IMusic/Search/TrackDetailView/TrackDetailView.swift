@@ -37,6 +37,7 @@ class TrackDetailView: UIView {
     }()
     
     weak var delegate: TrackMovingDelegate?
+    weak var tabBarDelegate: MainTabBarControllerDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -66,8 +67,10 @@ class TrackDetailView: UIView {
     // MARK: - @IBAction
     
     @IBAction private func dragDownButtonTapped(_ sender: UIButton) {
-        // сворачиваем данное окошко с экрана
-        self.removeFromSuperview()
+        // сворачиваем данное окошко с экрана анимированно
+        // логика будет в MainTabBarController, а вызываться будет здесь. Поэтому используем протокол.
+        self.tabBarDelegate?.minimizedTrackDetailController()
+//        self.removeFromSuperview()
     }
     
     // обрабатываем передвижение слайдера
