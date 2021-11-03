@@ -9,6 +9,7 @@ import UIKit
 
 protocol MainTabBarControllerDelegate: AnyObject {
     func minimizedTrackDetailController()
+    func maximizedTrackDetailController(viewModel: SearchViewModel.Cell?)  // будет раскрывать контроллер. принимает информацию по конкретной ячейке
 }
 
 class MainTabBarController: UITabBarController {
@@ -19,12 +20,18 @@ class MainTabBarController: UITabBarController {
     private var bottomAnchorConstraint: NSLayoutConstraint!
 
     let searchViewController: SearchViewController = SearchViewController.loadFromStoryboard()
-    
+    let trackDetailView: TrackDetailView = TrackDetailView.loadFromNib()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tabBar.backgroundColor = .white
         tabBar.tintColor = UIColor(red: 255, green: 0, blue: 96, alpha: 1)
+    
+        // назначаем делегатов
+        searchViewController.tabBarDelegate = self  // для протокола MainTabBarControllerDelegate
+        trackDetailView.tabBarDelegate = self
+        trackDetailView.delegate = searchViewController
         
         setupTrackDetailView()
         
@@ -56,15 +63,6 @@ class MainTabBarController: UITabBarController {
 // здесь будем добавлять анимацию (когда сворачиваем трек). Эта анимация будет на всех экранах
 private extension MainTabBarController {
     func setupTrackDetailView() {
-        print("setupTrackDetailView")
-        
-        let trackDetailView: TrackDetailView = TrackDetailView.loadFromNib()
-        trackDetailView.backgroundColor = .green
-        
-        // назначаем делегатов
-        trackDetailView.tabBarDelegate = self
-        trackDetailView.delegate = searchViewController
-
 //        view.addSubview(trackDetailView) // таким образом получается эта вью над таббаром
         
         // мы хотим сделать так, что бы вьюшка была за таббаром, но выше других вию
@@ -72,7 +70,9 @@ private extension MainTabBarController {
         
         // use auto layout
         trackDetailView.translatesAutoresizingMaskIntoConstraints = false
-        maximizedTopAnchorConstraint = trackDetailView.topAnchor.constraint(equalTo: view.topAnchor)
+
+        // добавив  constant: view.frame.height верхнюю границу помещаем вниз, что бы не было видно
+        maximizedTopAnchorConstraint = trackDetailView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height)
         minimizedTopAnchorConstraint = trackDetailView.topAnchor.constraint(
             equalTo: tabBar.topAnchor, constant: MainTabBarController.hightOfMinimizedTrackView)
         
@@ -85,19 +85,55 @@ private extension MainTabBarController {
         trackDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         trackDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
     }
+    
+    struct AnimationConfig {
+        static let withDuration = 0.5
+        static let delay: Double = 0
+        static let usingSpringWithDamping = 0.7
+        static let initialSpringVelocity: CGFloat = 1
+        static let options: UIView.AnimationOptions = .curveEaseOut
+    }
+
+    func viewAnimate(animations: @escaping () -> Void) {
+        UIView.animate(withDuration: AnimationConfig.withDuration,
+                       delay: AnimationConfig.delay,
+                       usingSpringWithDamping: AnimationConfig.usingSpringWithDamping,
+                       initialSpringVelocity: AnimationConfig.initialSpringVelocity,
+                       options: AnimationConfig.options,
+                       animations: { animations() },
+                       completion: nil)
+    }
 }
 
 extension MainTabBarController: MainTabBarControllerDelegate {
     func minimizedTrackDetailController() {
+        // логика то, что экран уменьшается
         maximizedTopAnchorConstraint.isActive = false
+        
+        // нам надо сместить значение нижней границы на высоту телефона
+        bottomAnchorConstraint.constant = view.frame.height
+        
         minimizedTopAnchorConstraint.isActive = true
         
-        UIView.animate(withDuration: 0.5,
-                       delay: 0,
-                       usingSpringWithDamping: 0.7,
-                       initialSpringVelocity: 1,
-                       options: .curveEaseOut,
-                       animations: { self.view.layoutIfNeeded() },  // очень часто обноваляется благодаря этой функции
-                       completion: nil)
+        viewAnimate {
+            self.view.layoutIfNeeded()
+            self.tabBar.alpha = 1
+        }
+    }
+    
+    func maximizedTrackDetailController(viewModel: SearchViewModel.Cell?) {
+        guard let viewModel = viewModel else { return }
+        trackDetailView.set(viewModel: viewModel)
+        
+        // логика то, что экран увеличивается
+        maximizedTopAnchorConstraint.isActive = true
+        minimizedTopAnchorConstraint.isActive = false
+        maximizedTopAnchorConstraint.constant = 0  // отменяем все смещение
+        bottomAnchorConstraint.constant = 0 // отменяем все смещение
+        
+        viewAnimate {
+            self.view.layoutIfNeeded()
+            self.tabBar.alpha = 0  // скрываем tabBar
+        }
     }
 }

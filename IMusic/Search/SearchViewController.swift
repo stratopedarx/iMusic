@@ -23,6 +23,8 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
     private var timer: Timer?
     private lazy var footerView = FooterView()  // прогоняем эту вью через весь цикл clean architecture
     
+    weak var tabBarDelegate: MainTabBarControllerDelegate?
+    
     
     // MARK: Object lifecycle
     // так как загружаем не из xib файла, а из сториборд, то эти инициализаторы нам не понадобятся
@@ -124,6 +126,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         // по иерархии новый экран должен находиться сверху. За текущий контроллер отвечает свойство window.
         // с помощью данного свойста мы можем сказать, что хотим наложить новый экран по верх всех.
         // keyWindow - то окно, на котором мы сейчас находимся
+        /*
         let window = getKeyWindow()
         // из ниб файла загружаем View.
         let trackDetailsView: TrackDetailView = TrackDetailView.loadFromNib()
@@ -131,6 +134,10 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         trackDetailsView.delegate = self
     
         window.addSubview(trackDetailsView)
+         */
+        
+        // то что выше. Это была логика до того как мы решили добавить окно анимации, которое красиво сворачивается вниз
+        tabBarDelegate?.maximizedTrackDetailController(viewModel: cellViewModel)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
