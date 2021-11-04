@@ -118,6 +118,8 @@ extension MainTabBarController: MainTabBarControllerDelegate {
         viewAnimate {
             self.view.layoutIfNeeded()
             self.tabBar.alpha = 1
+            self.trackDetailView.miniTrackView.alpha = 1
+            self.trackDetailView.maximizedStackView.alpha = 0  // убираем большой плеер
         }
     }
     
@@ -134,6 +136,8 @@ extension MainTabBarController: MainTabBarControllerDelegate {
         viewAnimate {
             self.view.layoutIfNeeded()
             self.tabBar.alpha = 0  // скрываем tabBar
+            self.trackDetailView.miniTrackView.alpha = 0 // убираем маленький плеер
+            self.trackDetailView.maximizedStackView.alpha = 1
         }
     }
 }

@@ -16,9 +16,15 @@ protocol TrackMovingDelegate: AnyObject {
 
 class TrackDetailView: UIView {
     
-    static let scale: CGFloat = 0.8
+    // MARK: - Static default values
     
-    // MARK: - @IBOutlet
+    static let scale: CGFloat = 0.8
+    static let defaultCornerRadius: CGFloat = 5
+    static let defaulVolumeSliderValue: Float = 0.6
+    static let pauseImage = UIImage(named: "pause")
+    static let playImage = UIImage(named: "play")
+    
+    // MARK: - @IBOutlet maximized view
     
     @IBOutlet private weak var trackImageView: UIImageView!
     @IBOutlet private weak var currentTimeSlider: UISlider!
@@ -28,6 +34,16 @@ class TrackDetailView: UIView {
     @IBOutlet private weak var authorTitleLabel: UILabel!
     @IBOutlet private weak var playPauseButton: UIButton!
     @IBOutlet private weak var volumeSlider: UISlider!
+    @IBOutlet weak var maximizedStackView: UIStackView!
+    
+
+    // MARK: - @IBOutlet minimized view
+    @IBOutlet weak var miniTrackView: UIView!
+    @IBOutlet private weak var miniGoForwardButton: UIButton!
+    @IBOutlet private weak var miniTrackImageView: UIImageView!
+    @IBOutlet private weak var miniTrackTitleLabel: UILabel!
+    @IBOutlet private weak var miniPlayPauseButton: UIButton!
+    
     
     let player: AVPlayer = {
         let avPlayer = AVPlayer()
@@ -43,14 +59,22 @@ class TrackDetailView: UIView {
         super.awakeFromNib()
         
         setInitScaleForImage()
-        trackImageView.layer.cornerRadius = 5
+        trackImageView.layer.cornerRadius = TrackDetailView.defaultCornerRadius
         
         // set init volume
-        volumeSlider.value = 0.6
+        volumeSlider.value = TrackDetailView.defaulVolumeSliderValue
         player.volume = volumeSlider.value
+
+        // уменьшаем размер кнопки
+        miniPlayPauseButton.imageEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 10)
     }
     
+    // MARK: - Set function
+    
     func set(viewModel: SearchViewModel.Cell) {
+        // устанавливаем значения и для большого и для маленького экранов
+        miniTrackTitleLabel.text = viewModel.trackName
+
         trackTitleLabel.text = viewModel.trackName
         authorTitleLabel.text = viewModel.artistName
         playTrack(previewUrl: viewModel.previewUrl)
@@ -58,17 +82,20 @@ class TrackDetailView: UIView {
         observePlayerCurrentTime()  // для обновления лейблов currentTime and durationTime
         
         // test case: открыли трек, поставили паузу, свернули, поставили новый трек и там была неверная кнопка.
-        playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
+
+        playPauseButton.setImage(TrackDetailView.pauseImage, for: .normal)
+        miniPlayPauseButton.setImage(TrackDetailView.pauseImage, for: .normal)
         
         
         // меняет в строке 100х100 на 600х600
         let string600 = viewModel.iconUrlString.replacingOccurrences(of: "100x100", with: "600x600")
         
         guard let url = URL(string: string600) else { return }
+        miniTrackImageView.sd_setImage(with: url, completed: nil)
         trackImageView.sd_setImage(with: url, completed: nil)
     }
     
-    // MARK: - @IBAction
+    // MARK: - @IBAction maximized view
     
     @IBAction private func dragDownButtonTapped(_ sender: UIButton) {
         // сворачиваем данное окошко с экрана анимированно
@@ -121,15 +148,18 @@ class TrackDetailView: UIView {
     @IBAction private func playPauseAction(_ sender: UIButton) {
         if player.timeControlStatus == .paused {
             player.play()
-            playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
+            playPauseButton.setImage(TrackDetailView.pauseImage, for: .normal)
+            miniPlayPauseButton.setImage(TrackDetailView.pauseImage, for: .normal)
+            
             enlargeTrackImageView()
         } else {
             player.pause()
-            playPauseButton.setImage(UIImage(named: "play"), for: .normal)
+            playPauseButton.setImage(TrackDetailView.playImage, for: .normal)
+            miniPlayPauseButton.setImage(TrackDetailView.playImage, for: .normal)
             reduceTrackImageView()
         }
     }
-        
+    
     // для объяснения почему не освобождался объект вызовем deinit
     // речь про метод: monitorStartTime
     deinit {
