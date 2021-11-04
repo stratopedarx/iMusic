@@ -203,7 +203,7 @@ private extension TrackDetailView {
         case .ended:
             print("ended")
             handlePanEnded(gesture: gesture)
-        @unknown default:
+        default:
             print("default")
         }
     }
@@ -252,7 +252,7 @@ private extension TrackDetailView {
             handleDismissalPanChanged(gesture: gesture)
         case .ended:
             handleDismissalPanEnded(gesture: gesture)
-        @unknown default:
+        default:
             print("default")
         }
     }
