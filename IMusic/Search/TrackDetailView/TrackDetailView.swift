@@ -105,6 +105,9 @@ class TrackDetailView: UIView {
         // теперь добавим жест оттягивания вверх плеера
         // UIPanGestureRecognizer. есть несколько состояний: 1.только нажали (начали), 2.изменяем (двигаем). 3.отпустили палец от экрана
         miniTrackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))
+        
+        // теперь добавим смахивание вниз большого экрана
+        addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDismissalPan)))
     }
     
     // MAR: - @IBAction maximized view
@@ -182,14 +185,14 @@ class TrackDetailView: UIView {
 
 // MARK: - Minimizing and Maximizing gestures
 
-extension TrackDetailView {
-    @objc private func handleTapMaximized() {
+private extension TrackDetailView {
+    @objc func handleTapMaximized() {
         print("tap tap tap")
         // передаем nil так как мы не открываем новую ячейку
         self.tabBarDelegate?.maximizedTrackDetailController(viewModel: nil)
     }
     
-    @objc private func handlePan(gesture: UIPanGestureRecognizer) {
+    @objc func handlePan(gesture: UIPanGestureRecognizer) {
         switch gesture.state {
         case .began:
             // тут ничего не меняет
@@ -205,7 +208,7 @@ extension TrackDetailView {
         }
     }
     
-    private func handlePanChanged(gesture: UIPanGestureRecognizer) {
+    func handlePanChanged(gesture: UIPanGestureRecognizer) {
         // тут логика, наш миниконтроллер двигается либо вверх либо вниз
         // translationX = 0, потому что мы хотим двигать либо вверх, либо вниз
         
@@ -218,7 +221,7 @@ extension TrackDetailView {
         self.maximizedStackView.alpha = -translation.y / 200
     }
     
-    private func handlePanEnded(gesture: UIPanGestureRecognizer) {
+    func handlePanEnded(gesture: UIPanGestureRecognizer) {
         // если палец двигается быстро, значит надо быстрее открыть или закрыть экран
         // translation - фиксирует место где находится наш палец
         let translation = gesture.translation(in: self.superview)
@@ -240,6 +243,44 @@ extension TrackDetailView {
             }
         },
                        completion: nil)
+    }
+    
+    // сворачиваем большой экран
+    @objc func handleDismissalPan(gesture: UIPanGestureRecognizer) {
+        switch gesture.state {
+        case .changed:
+            handleDismissalPanChanged(gesture: gesture)
+        case .ended:
+            handleDismissalPanEnded(gesture: gesture)
+        @unknown default:
+            print("default")
+        }
+    }
+    
+    private func handleDismissalPanChanged(gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: self.superview)
+        maximizedStackView.transform = CGAffineTransform(translationX: 0, y: translation.y)
+    }
+    
+    private func handleDismissalPanEnded(gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: self.superview)
+
+        UIView.animate(withDuration: AnimationConfig.withDuration,
+                       delay: AnimationConfig.delay,
+                       usingSpringWithDamping: AnimationConfig.usingSpringWithDamping,
+                       initialSpringVelocity: AnimationConfig.initialSpringVelocity,
+                       options: AnimationConfig.options,
+                       animations: {
+            self.maximizedStackView.transform = .identity
+            if translation.y > 50 {
+                self.tabBarDelegate?.minimizedTrackDetailController()
+            }
+            
+        },
+                       completion: nil
+        )
+        
+        
     }
 }
 

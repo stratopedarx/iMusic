@@ -118,8 +118,8 @@ extension MainTabBarController: MainTabBarControllerDelegate {
     func maximizedTrackDetailController(viewModel: SearchViewModel.Cell?) {
         
         // логика то, что экран увеличивается
-        maximizedTopAnchorConstraint.isActive = true
         minimizedTopAnchorConstraint.isActive = false
+        maximizedTopAnchorConstraint.isActive = true
         maximizedTopAnchorConstraint.constant = 0  // отменяем все смещение
         bottomAnchorConstraint.constant = 0 // отменяем все смещение
         
