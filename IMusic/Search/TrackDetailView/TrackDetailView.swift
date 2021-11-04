@@ -57,6 +57,10 @@ class TrackDetailView: UIView {
         monitorStartTime()
         observePlayerCurrentTime()  // для обновления лейблов currentTime and durationTime
         
+        // test case: открыли трек, поставили паузу, свернули, поставили новый трек и там была неверная кнопка.
+        playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
+        
+        
         // меняет в строке 100х100 на 600х600
         let string600 = viewModel.iconUrlString.replacingOccurrences(of: "100x100", with: "600x600")
         
