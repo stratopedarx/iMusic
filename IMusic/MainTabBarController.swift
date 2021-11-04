@@ -85,14 +85,6 @@ private extension MainTabBarController {
         trackDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         trackDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
     }
-    
-    struct AnimationConfig {
-        static let withDuration = 0.5
-        static let delay: Double = 0
-        static let usingSpringWithDamping = 0.7
-        static let initialSpringVelocity: CGFloat = 1
-        static let options: UIView.AnimationOptions = .curveEaseOut
-    }
 
     func viewAnimate(animations: @escaping () -> Void) {
         UIView.animate(withDuration: AnimationConfig.withDuration,
@@ -124,8 +116,6 @@ extension MainTabBarController: MainTabBarControllerDelegate {
     }
     
     func maximizedTrackDetailController(viewModel: SearchViewModel.Cell?) {
-        guard let viewModel = viewModel else { return }
-        trackDetailView.set(viewModel: viewModel)
         
         // логика то, что экран увеличивается
         maximizedTopAnchorConstraint.isActive = true
@@ -139,5 +129,8 @@ extension MainTabBarController: MainTabBarControllerDelegate {
             self.trackDetailView.miniTrackView.alpha = 0 // убираем маленький плеер
             self.trackDetailView.maximizedStackView.alpha = 1
         }
+        
+        guard let viewModel = viewModel else { return }
+        trackDetailView.set(viewModel: viewModel)
     }
 }

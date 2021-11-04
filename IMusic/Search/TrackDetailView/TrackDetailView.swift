@@ -36,7 +36,7 @@ class TrackDetailView: UIView {
     @IBOutlet private weak var volumeSlider: UISlider!
     @IBOutlet weak var maximizedStackView: UIStackView!
     
-
+    
     // MARK: - @IBOutlet minimized view
     @IBOutlet weak var miniTrackView: UIView!
     @IBOutlet private weak var miniGoForwardButton: UIButton!
@@ -64,9 +64,11 @@ class TrackDetailView: UIView {
         // set init volume
         volumeSlider.value = TrackDetailView.defaulVolumeSliderValue
         player.volume = volumeSlider.value
-
+        
         // уменьшаем размер кнопки
         miniPlayPauseButton.imageEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 10)
+        
+        setupGestures()
     }
     
     // MARK: - Set function
@@ -74,7 +76,7 @@ class TrackDetailView: UIView {
     func set(viewModel: SearchViewModel.Cell) {
         // устанавливаем значения и для большого и для маленького экранов
         miniTrackTitleLabel.text = viewModel.trackName
-
+        
         trackTitleLabel.text = viewModel.trackName
         authorTitleLabel.text = viewModel.artistName
         playTrack(previewUrl: viewModel.previewUrl)
@@ -82,7 +84,7 @@ class TrackDetailView: UIView {
         observePlayerCurrentTime()  // для обновления лейблов currentTime and durationTime
         
         // test case: открыли трек, поставили паузу, свернули, поставили новый трек и там была неверная кнопка.
-
+        
         playPauseButton.setImage(TrackDetailView.pauseImage, for: .normal)
         miniPlayPauseButton.setImage(TrackDetailView.pauseImage, for: .normal)
         
@@ -95,13 +97,23 @@ class TrackDetailView: UIView {
         trackImageView.sd_setImage(with: url, completed: nil)
     }
     
-    // MARK: - @IBAction maximized view
+    private func setupGestures() {
+        // добавим жесты. Сначала добавим нажатие на экран. Только к miniTrackView
+        miniTrackView.addGestureRecognizer(
+            UITapGestureRecognizer(target: self, action: #selector(handleTapMaximized)))
+        
+        // теперь добавим жест оттягивания вверх плеера
+        // UIPanGestureRecognizer. есть несколько состояний: 1.только нажали (начали), 2.изменяем (двигаем). 3.отпустили палец от экрана
+        miniTrackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))
+    }
+    
+    // MAR: - @IBAction maximized view
     
     @IBAction private func dragDownButtonTapped(_ sender: UIButton) {
         // сворачиваем данное окошко с экрана анимированно
         // логика будет в MainTabBarController, а вызываться будет здесь. Поэтому используем протокол.
         self.tabBarDelegate?.minimizedTrackDetailController()
-//        self.removeFromSuperview()
+        //        self.removeFromSuperview()
     }
     
     // обрабатываем передвижение слайдера
@@ -137,14 +149,14 @@ class TrackDetailView: UIView {
             self.set(viewModel: cellViewModel)
         }
     }
-
+    
     @IBAction private func nextTrack(_ sender: UIButton) {
         let cellViewModel = delegate?.moveForwardForNextTrack()
         if let cellViewModel = cellViewModel {
             self.set(viewModel: cellViewModel)
         }
     }
-
+    
     @IBAction private func playPauseAction(_ sender: UIButton) {
         if player.timeControlStatus == .paused {
             player.play()
@@ -166,6 +178,71 @@ class TrackDetailView: UIView {
         print("track detail view memory reclaimed")
     }
 }
+
+
+// MARK: - Minimizing and Maximizing gestures
+
+extension TrackDetailView {
+    @objc private func handleTapMaximized() {
+        print("tap tap tap")
+        // передаем nil так как мы не открываем новую ячейку
+        self.tabBarDelegate?.maximizedTrackDetailController(viewModel: nil)
+    }
+    
+    @objc private func handlePan(gesture: UIPanGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            // тут ничего не меняет
+            print("began")
+        case .changed:
+            print("changed")
+            handlePanChanged(gesture: gesture)
+        case .ended:
+            print("ended")
+            handlePanEnded(gesture: gesture)
+        @unknown default:
+            print("default")
+        }
+    }
+    
+    private func handlePanChanged(gesture: UIPanGestureRecognizer) {
+        // тут логика, наш миниконтроллер двигается либо вверх либо вниз
+        // translationX = 0, потому что мы хотим двигать либо вверх, либо вниз
+        
+        let translation = gesture.translation(in: self.superview)
+        self.transform = CGAffineTransform(translationX: 0, y: translation.y)
+        
+        // меняет прозрачность большого и миниплеера
+        let newAlpha = 1 + translation.y / 200
+        self.miniTrackView.alpha = newAlpha < 0 ? 0 : newAlpha
+        self.maximizedStackView.alpha = -translation.y / 200
+    }
+    
+    private func handlePanEnded(gesture: UIPanGestureRecognizer) {
+        // если палец двигается быстро, значит надо быстрее открыть или закрыть экран
+        // translation - фиксирует место где находится наш палец
+        let translation = gesture.translation(in: self.superview)
+        // velocity - скорость. фиксирует скорость
+        let velocity = gesture.velocity(in: self.superview)
+        
+        UIView.animate(withDuration: AnimationConfig.withDuration,
+                       delay: AnimationConfig.delay,
+                       usingSpringWithDamping: AnimationConfig.usingSpringWithDamping,
+                       initialSpringVelocity: AnimationConfig.initialSpringVelocity,
+                       options: AnimationConfig.options,
+                       animations: {
+            self.transform = .identity  // делаем для того, что бы правильно открывался экран
+            if translation.y < -200 || velocity.y < -500 {
+                self.tabBarDelegate?.maximizedTrackDetailController(viewModel: nil)
+            } else {
+                self.miniTrackView.alpha = 1.0
+                self.maximizedStackView.alpha = 0
+            }
+        },
+                       completion: nil)
+    }
+}
+
 
 
 // MARK: - Helpers
@@ -217,9 +294,9 @@ private extension TrackDetailView {
                 self.durationLabel.text = "-\(currentDurationText)"
                 
                 self.updateCurrentTimeSlider() // обновляем slider
-        }
+            }
     }
-
+    
     // логика для слайдера песни
     func updateCurrentTimeSlider() {
         // текущая отметка
@@ -230,14 +307,14 @@ private extension TrackDetailView {
         let percentage = currentTimeSeconds / durationSeconds
         self.currentTimeSlider.value = Float(percentage)
     }
-
+    
     // MARK: - Animations
-
+    
     // картинка будет отображаться не на весь экран
     func setInitScaleForImage() {
         trackImageView.transform = CGAffineTransform(scaleX: TrackDetailView.scale, y: TrackDetailView.scale)
     }
-
+    
     func enlargeTrackImageView() {
         UIView.animate(withDuration: 1,  // сколько будет длиться данная анимация
                        delay: 0,  // без задержки
