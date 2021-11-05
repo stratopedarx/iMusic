@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 protocol MainTabBarControllerDelegate: AnyObject {
     func minimizedTrackDetailController()
@@ -35,17 +36,22 @@ class MainTabBarController: UITabBarController {
         
         setupTrackDetailView()
         
-        let libraryViewController = ViewController()
+        let library = Library()
+        let hostViewController = UIHostingController(rootView: library)
+        hostViewController.tabBarItem.image = UIImage(named: "library")
+        hostViewController.tabBarItem.title = "Library"
         
         viewControllers = [
+            hostViewController,  // navigation view проще добавить в swiftUI
             generateViewController(
                 rootViewController: searchViewController,
                 image: UIImage(named: "search")!,
-                title: "Search"),
-            generateViewController(
-                rootViewController: libraryViewController,
-                image: UIImage(named: "library")!,
-                title: "Library")
+                title: "Search")
+            // так было изначально
+//            generateViewController(
+//                rootViewController: hostViewController,
+//                image: UIImage(named: "library")!,
+//                title: "Library")
         ]
     }
     

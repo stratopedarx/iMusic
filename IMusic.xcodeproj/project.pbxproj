@@ -20,6 +20,7 @@
 		743BC601272C40F70001465D /* UIViewController + Storyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743BC600272C40F70001465D /* UIViewController + Storyboard.swift */; };
 		744CAE2B27312E2400573670 /* CMTime + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744CAE2A27312E2400573670 /* CMTime + Extension.swift */; };
 		744FE9662732C1440006FCBA /* Nib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744FE9652732C1440006FCBA /* Nib.swift */; };
+		749AAACC27351AE7000607E8 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749AAACB27351AE7000607E8 /* Library.swift */; };
 		74B28BC527300A6400EEBF37 /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B28BC427300A6400EEBF37 /* FooterView.swift */; };
 		74B28BC82730202D00EEBF37 /* TrackDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74B28BC72730202D00EEBF37 /* TrackDetailView.xib */; };
 		74B28BCA2730203900EEBF37 /* TrackDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B28BC92730203900EEBF37 /* TrackDetailView.swift */; };
@@ -51,6 +52,7 @@
 		743BC600272C40F70001465D /* UIViewController + Storyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Storyboard.swift"; sourceTree = "<group>"; };
 		744CAE2A27312E2400573670 /* CMTime + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMTime + Extension.swift"; sourceTree = "<group>"; };
 		744FE9652732C1440006FCBA /* Nib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nib.swift; sourceTree = "<group>"; };
+		749AAACB27351AE7000607E8 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		74B28BC427300A6400EEBF37 /* FooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		74B28BC72730202D00EEBF37 /* TrackDetailView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TrackDetailView.xib; sourceTree = "<group>"; };
 		74B28BC92730203900EEBF37 /* TrackDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailView.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				74E7A7592729ADF500C65617 /* AppDelegate.swift */,
 				74E7A75B2729ADF500C65617 /* SceneDelegate.swift */,
 				74E7A76D2729AE3E00C65617 /* MainTabBarController.swift */,
+				749AAACB27351AE7000607E8 /* Library.swift */,
 				74E7A76F2729B1E800C65617 /* SearchMusicViewController.swift */,
 				74E7A75D2729ADF500C65617 /* ViewController.swift */,
 				743BC5C4272BD9030001465D /* Services */,
@@ -333,6 +336,7 @@
 				74B28BC527300A6400EEBF37 /* FooterView.swift in Sources */,
 				744CAE2B27312E2400573670 /* CMTime + Extension.swift in Sources */,
 				74B8E8D3272EE90000C0F7D2 /* TrackCell.swift in Sources */,
+				749AAACC27351AE7000607E8 /* Library.swift in Sources */,
 				744FE9662732C1440006FCBA /* Nib.swift in Sources */,
 				74E7A75A2729ADF500C65617 /* AppDelegate.swift in Sources */,
 				74E7A76E2729AE3E00C65617 /* MainTabBarController.swift in Sources */,
