@@ -38,6 +38,7 @@
 		74E7A7662729AE0800C65617 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74E7A7642729AE0800C65617 /* LaunchScreen.storyboard */; };
 		74E7A76E2729AE3E00C65617 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E7A76D2729AE3E00C65617 /* MainTabBarController.swift */; };
 		74E7A7702729B1E800C65617 /* SearchMusicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E7A76F2729B1E800C65617 /* SearchMusicViewController.swift */; };
+		74FF2CB5273A6F740097276A /* LibraryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FF2CB4273A6F740097276A /* LibraryCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -73,6 +74,7 @@
 		74E7A7672729AE0800C65617 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		74E7A76D2729AE3E00C65617 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		74E7A76F2729B1E800C65617 /* SearchMusicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMusicViewController.swift; sourceTree = "<group>"; };
+		74FF2CB4273A6F740097276A /* LibraryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCell.swift; sourceTree = "<group>"; };
 		EB3CBAC60FEC4B2D03CD16D3 /* Pods-IMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IMusic.debug.xcconfig"; path = "Target Support Files/Pods-IMusic/Pods-IMusic.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -186,10 +188,10 @@
 				74E7A7592729ADF500C65617 /* AppDelegate.swift */,
 				74E7A75B2729ADF500C65617 /* SceneDelegate.swift */,
 				74E7A76D2729AE3E00C65617 /* MainTabBarController.swift */,
-				749AAACB27351AE7000607E8 /* Library.swift */,
 				74E7A76F2729B1E800C65617 /* SearchMusicViewController.swift */,
 				74E7A75D2729ADF500C65617 /* ViewController.swift */,
 				743BC5C4272BD9030001465D /* Services */,
+				74FF2CB3273A6F460097276A /* Library */,
 				743BC5B5272BD7D50001465D /* Search */,
 				74E7A75F2729ADF500C65617 /* Main.storyboard */,
 				74E7A7622729AE0800C65617 /* Assets.xcassets */,
@@ -198,6 +200,15 @@
 				743BC602272C40FB0001465D /* Helpers */,
 			);
 			path = IMusic;
+			sourceTree = "<group>";
+		};
+		74FF2CB3273A6F460097276A /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				749AAACB27351AE7000607E8 /* Library.swift */,
+				74FF2CB4273A6F740097276A /* LibraryCell.swift */,
+			);
+			path = Library;
 			sourceTree = "<group>";
 		};
 		826E5E2829A65FE2D8404653 /* Frameworks */ = {
@@ -354,6 +365,7 @@
 				744FE9662732C1440006FCBA /* Nib.swift in Sources */,
 				74E7A75A2729ADF500C65617 /* AppDelegate.swift in Sources */,
 				74E7A76E2729AE3E00C65617 /* MainTabBarController.swift in Sources */,
+				74FF2CB5273A6F740097276A /* LibraryCell.swift in Sources */,
 				743BC5CD272BD9A60001465D /* SearchWorker.swift in Sources */,
 				743BC5D0272BD9A60001465D /* SearchViewController.swift in Sources */,
 				745AE3122739709A00796F0B /* UserDefaults + Extension.swift in Sources */,
