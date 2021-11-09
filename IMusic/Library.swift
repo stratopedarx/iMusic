@@ -6,8 +6,14 @@
 //
 
 import SwiftUI
+import URLImage
 
 struct Library: View {
+    static let buttonColor = Color(red: 0.9921568627, green: 0.1764705882, blue: 0.3333333333)
+    static let backgroundColor = Color(red: 0.9531342387, green: 0.9490900636, blue: 0.9562709928)
+    
+    var tracks = UserDefaults.standard.savedTracks()
+    
     var body: some View {
         NavigationView {
             // что бы настроить кнопки надо исползовать GeometryReader
@@ -20,21 +26,20 @@ struct Library: View {
                             Image(systemName: "play.fill")
                         }
                         .frame(width: abs(geometry.size.width / 2 - 10), height: 50)
-                        .tint(Color(red: 0.9921568627, green: 0.1764705882, blue: 0.3333333333))
-                        .background(Color(red: 0.9531342387, green: 0.9490900636, blue: 0.9562709928))
+                        .tint(Library.buttonColor)
+                        .background(Library.backgroundColor)
                         .cornerRadius(10)
-
+                        
                         Button {
                             print("456")
                         } label: {
                             Image(systemName: "arrow.triangle.2.circlepath")
                         }
                         .frame(width: abs(geometry.size.width / 2 - 10), height: 50)
-                        .tint(Color(red: 0.9921568627, green: 0.1764705882, blue: 0.3333333333))
-                        .background(Color(red: 0.9531342387, green: 0.9490900636, blue: 0.9562709928))
+                        .tint(Library.buttonColor)
+                        .background(Library.backgroundColor)
                         .cornerRadius(10)
                     }
-
                 }
                 .padding()
                 .frame(height: 65)
@@ -42,31 +47,38 @@ struct Library: View {
                 Divider()
                     .padding(.leading)
                     .padding(.trailing)
-
-                List {
-                    LibraryCell()
-                    Text("fisrt")
-                    Text("second")
+                
+                List(tracks) { track in
+                    LibraryCell(cell: track)
+                    
                 }
             }
-                .navigationTitle("Library")
+            .navigationTitle("Library")
         }
     }
 }
 
 struct LibraryCell: View {
+    var cell: SearchViewModel.Cell
+    
     var body: some View {
         HStack {
-            Image("Image")
-                .resizable()
-                .frame(width: 60, height: 60)
-                .cornerRadius(2)
-            VStack {
-                Text("Track name")
-                Text("Artist name")
+            let url = URL(string: cell.iconUrlString)!
+            URLImage(url) { image in
+                image
+                    .resizable()
+                    .frame(width: 60, height: 60)
+                    .cornerRadius(2)
             }
+            
+            
+            VStack(alignment: .leading) {
+                Text("\(cell.trackName)")
+                Text("\(cell.artistName)")
+            }
+            
         }
-
+        
     }
 }
 

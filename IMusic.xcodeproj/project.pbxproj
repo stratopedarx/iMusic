@@ -10,6 +10,8 @@
 		4CF29A8A6B7C8E63291C0A0C /* Pods_IMusic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B02D6AA926704D52D2CAFAD /* Pods_IMusic.framework */; };
 		74090226272AC92F00665E39 /* SearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74090225272AC92F00665E39 /* SearchResponse.swift */; };
 		74090228272AD73700665E39 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74090227272AD73700665E39 /* NetworkService.swift */; };
+		7409FCF32739AB7D002EA2B5 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 7409FCF22739AB7D002EA2B5 /* URLImage */; };
+		7409FCF52739AB7D002EA2B5 /* URLImageStore in Frameworks */ = {isa = PBXBuildFile; productRef = 7409FCF42739AB7D002EA2B5 /* URLImageStore */; };
 		743BC5CC272BD9A60001465D /* SearchPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743BC5C5272BD9A60001465D /* SearchPresenter.swift */; };
 		743BC5CD272BD9A60001465D /* SearchWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743BC5C6272BD9A60001465D /* SearchWorker.swift */; };
 		743BC5CE272BD9A60001465D /* SearchRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743BC5C7272BD9A60001465D /* SearchRouter.swift */; };
@@ -20,6 +22,7 @@
 		743BC601272C40F70001465D /* UIViewController + Storyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743BC600272C40F70001465D /* UIViewController + Storyboard.swift */; };
 		744CAE2B27312E2400573670 /* CMTime + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744CAE2A27312E2400573670 /* CMTime + Extension.swift */; };
 		744FE9662732C1440006FCBA /* Nib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744FE9652732C1440006FCBA /* Nib.swift */; };
+		745AE3122739709A00796F0B /* UserDefaults + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745AE3112739709A00796F0B /* UserDefaults + Extension.swift */; };
 		749AAACC27351AE7000607E8 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749AAACB27351AE7000607E8 /* Library.swift */; };
 		74B28BC527300A6400EEBF37 /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B28BC427300A6400EEBF37 /* FooterView.swift */; };
 		74B28BC82730202D00EEBF37 /* TrackDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74B28BC72730202D00EEBF37 /* TrackDetailView.xib */; };
@@ -52,6 +55,7 @@
 		743BC600272C40F70001465D /* UIViewController + Storyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Storyboard.swift"; sourceTree = "<group>"; };
 		744CAE2A27312E2400573670 /* CMTime + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMTime + Extension.swift"; sourceTree = "<group>"; };
 		744FE9652732C1440006FCBA /* Nib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nib.swift; sourceTree = "<group>"; };
+		745AE3112739709A00796F0B /* UserDefaults + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults + Extension.swift"; sourceTree = "<group>"; };
 		749AAACB27351AE7000607E8 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		74B28BC427300A6400EEBF37 /* FooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		74B28BC72730202D00EEBF37 /* TrackDetailView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TrackDetailView.xib; sourceTree = "<group>"; };
@@ -77,6 +81,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7409FCF32739AB7D002EA2B5 /* URLImage in Frameworks */,
+				7409FCF52739AB7D002EA2B5 /* URLImageStore in Frameworks */,
 				4CF29A8A6B7C8E63291C0A0C /* Pods_IMusic.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,6 +121,7 @@
 			children = (
 				743BC600272C40F70001465D /* UIViewController + Storyboard.swift */,
 				744CAE2A27312E2400573670 /* CMTime + Extension.swift */,
+				745AE3112739709A00796F0B /* UserDefaults + Extension.swift */,
 				744FE9652732C1440006FCBA /* Nib.swift */,
 				74C936BD2734186B00EEAB83 /* AnimationConfig.swift */,
 			);
@@ -228,6 +235,10 @@
 			dependencies = (
 			);
 			name = IMusic;
+			packageProductDependencies = (
+				7409FCF22739AB7D002EA2B5 /* URLImage */,
+				7409FCF42739AB7D002EA2B5 /* URLImageStore */,
+			);
 			productName = IMusic;
 			productReference = 74E7A7562729ADF500C65617 /* IMusic.app */;
 			productType = "com.apple.product-type.application";
@@ -256,6 +267,9 @@
 				Base,
 			);
 			mainGroup = 74E7A74D2729ADF500C65617;
+			packageReferences = (
+				7409FCF12739AB7D002EA2B5 /* XCRemoteSwiftPackageReference "url-image" */,
+			);
 			productRefGroup = 74E7A7572729ADF500C65617 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -342,6 +356,7 @@
 				74E7A76E2729AE3E00C65617 /* MainTabBarController.swift in Sources */,
 				743BC5CD272BD9A60001465D /* SearchWorker.swift in Sources */,
 				743BC5D0272BD9A60001465D /* SearchViewController.swift in Sources */,
+				745AE3122739709A00796F0B /* UserDefaults + Extension.swift in Sources */,
 				743BC5CE272BD9A60001465D /* SearchRouter.swift in Sources */,
 				74C936BE2734186B00EEAB83 /* AnimationConfig.swift in Sources */,
 				743BC5CF272BD9A60001465D /* SearchModels.swift in Sources */,
@@ -568,6 +583,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7409FCF12739AB7D002EA2B5 /* XCRemoteSwiftPackageReference "url-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dmytro-anokhin/url-image";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7409FCF22739AB7D002EA2B5 /* URLImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7409FCF12739AB7D002EA2B5 /* XCRemoteSwiftPackageReference "url-image" */;
+			productName = URLImage;
+		};
+		7409FCF42739AB7D002EA2B5 /* URLImageStore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7409FCF12739AB7D002EA2B5 /* XCRemoteSwiftPackageReference "url-image" */;
+			productName = URLImageStore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 74E7A74E2729ADF500C65617 /* Project object */;
 }

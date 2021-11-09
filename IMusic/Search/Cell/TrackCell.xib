@@ -40,9 +40,20 @@
                         <color key="textColor" red="0.4941176471" green="0.4941176471" blue="0.52156862749999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uat-dh-9db">
+                        <rect key="frame" x="374" y="34" width="16" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <color key="tintColor" red="0.90980392160000001" green="0.27058823529999998" blue="0.35294117650000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        <state key="normal" image="Add"/>
+                        <connections>
+                            <action selector="addTrackAction:" destination="AKk-wH-eYh" eventType="touchUpInside" id="Sez-Cl-zK9"/>
+                        </connections>
+                    </button>
                 </subviews>
             </tableViewCellContentView>
             <connections>
+                <outlet property="addTrackButton" destination="uat-dh-9db" id="B81-I7-7d5"/>
                 <outlet property="artistNameLabel" destination="L5G-yH-FVH" id="e61-UL-01s"/>
                 <outlet property="collectionNameLabel" destination="UAT-cp-4ql" id="Ss6-h4-bt4"/>
                 <outlet property="trackImageView" destination="1T3-JS-InL" id="epM-oa-xxt"/>
@@ -51,4 +62,7 @@
             <point key="canvasLocation" x="40.579710144927539" y="83.705357142857139"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="Add" width="16" height="16"/>
+    </resources>
 </document>
