@@ -71,6 +71,25 @@ class SearchViewController: UIViewController, SearchDisplayLogic {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // этот метод реализуем, что бы менять делегата. Сейчас у нас делегат меняется, когда заходим на окно Library и окно Search
+        
+        // добираемся до основного экрана. Раньше это выглядело проще
+        // let keyWindow = UIApplication.shared.keyWindow
+        let keyWindow = UIApplication.shared.connectedScenes.filter {
+            $0.activationState == .foregroundActive
+        }
+            .map { $0 as? UIWindowScene }
+            .compactMap { $0 }
+            .first?.windows.filter { $0.isKeyWindow }
+            .first
+        // теперь получаем наш tabBar
+        let tabBarVC = keyWindow?.rootViewController as? MainTabBarController
+        // и меняем делегата
+        tabBarVC?.trackDetailView.delegate = self
+    }
+    
     private func setupSearchBar() {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false

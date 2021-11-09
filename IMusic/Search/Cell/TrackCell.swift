@@ -88,6 +88,7 @@ class TrackCell: UITableViewCell {
         if let savedData = try? NSKeyedArchiver.archivedData(withRootObject: listOfTracks, requiringSecureCoding: false) {
             print("Saved successfully")
             
+            // если получилось заархивировать, то сохраняем в UserDefaults
             defaults.set(savedData, forKey: UserDefaults.favouriteTrackKey)
         }
         

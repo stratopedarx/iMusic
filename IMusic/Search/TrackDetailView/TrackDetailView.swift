@@ -9,7 +9,14 @@ import UIKit
 import SDWebImage
 import AVKit
 
-protocol TrackMovingDelegate: AnyObject {
+// изначально так использовали, но после мы захотели использовать этот протокол для structur-ы Library
+//protocol TrackMovingDelegate: AnyObject {
+//    func moveBackForPreviousTrack() -> SearchViewModel.Cell?
+//    func moveForwardForNextTrack() -> SearchViewModel.Cell?
+//}
+
+// убрали AnyObject. Так же нам придется убрать слово `weak` var delegate: TrackMovingDelegate?
+protocol TrackMovingDelegate {
     func moveBackForPreviousTrack() -> SearchViewModel.Cell?
     func moveForwardForNextTrack() -> SearchViewModel.Cell?
 }
@@ -52,7 +59,10 @@ class TrackDetailView: UIView {
         return avPlayer
     }()
     
-    weak var delegate: TrackMovingDelegate?
+    // использовалось так, пока протокол был подписан под AnyObject
+//    weak var delegate: TrackMovingDelegate?
+    
+    var delegate: TrackMovingDelegate?
     weak var tabBarDelegate: MainTabBarControllerDelegate?
     
     override func awakeFromNib() {

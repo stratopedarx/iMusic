@@ -36,7 +36,10 @@ class MainTabBarController: UITabBarController {
         
         setupTrackDetailView()
         
-        let library = Library()
+        var library = Library()
+        library.tabBarDelegate = self  // назначаем делегата в лайбрари, что бы из library могли открыть TrackDetailView
+        
+
         let hostViewController = UIHostingController(rootView: library)
         hostViewController.tabBarItem.image = UIImage(named: "library")
         hostViewController.tabBarItem.title = "Library"
