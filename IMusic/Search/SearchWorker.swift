@@ -8,6 +8,4 @@
 
 import UIKit
 
-class SearchService {
-
-}
+class SearchService { }

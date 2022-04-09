@@ -65,15 +65,14 @@ struct Library: View {
             .actionSheet(isPresented: $showingAlert, content: {
                 ActionSheet(
                     title: Text("Are you sure you wnat to delete this track?"),
-                    buttons: [
-                        .destructive(Text("Delete"),
-                                     action: {
-                                         // тут у нас нет доступа к ячейке
-                                         print("Deleting: \(track.trackName)")
-                                         self.delete(track: track)
-                                     }),
-                        .cancel()
-                    ]
+                    buttons: [.destructive(
+                        Text("Delete"),
+                        action: {
+                            // тут у нас нет доступа к ячейке
+                            print("Deleting: \(track.trackName)")
+                            self.delete(track: track)
+                        }),
+                              .cancel()]
                 )
             })
             
